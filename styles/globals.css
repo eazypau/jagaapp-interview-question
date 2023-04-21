@@ -48,7 +48,9 @@ body {
 	margin-left: 3.5em;
 }
 
-.btn {
+.primary-accordion .btn,
+.summary .btn,
+.sub-summary .btn {
 	margin-left: calc(2rem + 16px);
 	margin-top: 0.5rem;
 	margin-bottom: 0.5rem;

@@ -129,7 +129,7 @@ function NestedAccordion({ exampleData, handleCreate, showDeleteButton }) {
 	const renderAccordions = (exampleData) => {
 		return exampleData.map((data) => (
 			<div key={data.title}>
-				<Accordions data={data} handleCreate={handleCreate} showDeleteIcon={showDeleteButton} />
+				<Accordions data={data} handleCreate={handleCreate} showDeleteIcon={showDeleteButton} className="primary-accordion" />
 			</div>
 		));
 	};

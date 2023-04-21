@@ -43,7 +43,8 @@ body {
 	margin-left: 0.5em;
 }
 
-.details {
+.summary .details,
+.sub-summary .details {
 	margin-left: 3.5em;
 }
 

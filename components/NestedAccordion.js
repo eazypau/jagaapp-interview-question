@@ -78,7 +78,7 @@ function Accordions({ data, className, handleCreate, showDeleteIcon }) {
 				<div>
 					{" "}
 					{data.items.map((item, index) => {
-						const className = "sub-summary";
+						const className = "sub-summary no-shadow";
 						return (
 							<>
 								<Accordions

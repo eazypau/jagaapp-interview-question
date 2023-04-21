@@ -9,61 +9,84 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import Paper from "@mui/material/Paper";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ExampleNestedAccordion from "../../components/ExampleNestedAccordion";
+// import Accordion from "@mui/material/Accordion";
+// import AccordionSummary from "@mui/material/AccordionSummary";
+// import AccordionDetails from "@mui/material/AccordionDetails";
+// import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+// import ExampleNestedAccordion from "../../components/ExampleNestedAccordion";
+import {
+	NestedAccordion,
+	ExampleNestedAccordion,
+	IconButtonComponent,
+} from "../../components/index";
+
+const exampleData = [
+	{
+		title: "Important List",
+		description: "",
+		items: [
+			{
+				title: "Book a restaurant",
+				description: "Remember book a restaurant at 6th of December",
+				items: [
+					{
+						title: "Dishes",
+						description: "",
+						items: [
+							{
+								title: "Fried Vegetable",
+								description: "6pax",
+							},
+							{
+								title: "Fried Chicken",
+								description: "4pax",
+							},
+						],
+					},
+				],
+			},
+			{
+				title: "Restock groceries",
+				description: "Get the butter",
+			},
+		],
+	},
+	{
+		title: "Urgent",
+		description: "",
+		items: [
+			{
+				title: "Fetch kids",
+				description: "Today 5pm",
+			},
+		],
+	},
+];
 
 function Test1() {
 	const [value, setValue] = useState("1");
+	const [data, setData] = useState(exampleData);
+	const [showDeleteButton, setShowDeleteButton] = useState(false);
+	const [deleteButtonText, setDeleteButtonText] = useState("Enable Delete Button");
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
 	};
 
-	const exampleData = [
-		{
-			title: "Important List",
-			description: "",
-			items: [
-				{
-					title: "Book a restaurant",
-					description: "Remember book a restaurant at 6th of December",
-					items: [
-						{
-							title: "Dishes",
-							description: "",
-							items: [
-								{
-									title: "Fried Vegetable",
-									description: "6pax",
-								},
-								{
-									title: "Fried Chicken",
-									description: "4pax",
-								},
-							],
-						},
-					],
-				},
-				{
-					title: "Restock groceries",
-					description: "Get the butter",
-				},
-			],
-		},
-		{
-			title: "Urgent",
-			description: "",
-			items: [
-				{
-					title: "Fetch kids",
-					description: "Today 5pm",
-				},
-			],
-		},
-	];
+	const createItemHandler = () => {
+		console.log("create item");
+		// need to find a way to create the items by depth
+	};
+
+	const enableDeleteButton = () => {
+		if (showDeleteButton) {
+			setShowDeleteButton(false);
+			setDeleteButtonText("Enable Delete Button");
+		} else {
+			setShowDeleteButton(true);
+			setDeleteButtonText("Disable Delete Button");
+		}
+	};
 
 	const exampleData2 = [
 		{
@@ -186,69 +209,44 @@ function Test1() {
 						</Box>
 					</Stack>
 				</TabPanel>
-				<TabPanel value="2">
-					{/* <Typography variant="h5">
-						<strong>This is my answer</strong>
-					</Typography> */}
+				<TabPanel value="2" sx={{maxWidth: "1200px",  margin:"0 auto"}}>
 					<Stack spacing={2}>
 						<Typography variant="h6">Examples of using Accordions</Typography>
 						<hr />
 						<ExampleNestedAccordion />
-
-						<Typography variant="h6">Answer</Typography>
-						<hr />
-
-						{exampleData.map((data) => (
-							<Accordion id="nested_accordion" key={data.title}>
-								<AccordionSummary expandIcon={<ExpandMoreIcon />}>
-									<Typography>{data.title}</Typography>
-								</AccordionSummary>
-								{data.description ? <AccordionDetails>{data.description}</AccordionDetails> : ""}
-
-								{data?.items.map((item) => (
-									<Accordion key={item.title} className="sub-summary no-shadow">
-										<AccordionSummary expandIcon={<ExpandMoreIcon />} className="summary">
-											<Typography>{item.title}</Typography>
-										</AccordionSummary>
-
-										{item.description ? (
-											<AccordionDetails>
-												<Typography className="description">{item.description}</Typography>
-											</AccordionDetails>
-										) : (
-											""
-										)}
-
-										{item.items?.map((subItem) => (
-											<Accordion key={subItem.title} className="sub-summary no-shadow">
-												<AccordionSummary expandIcon={<ExpandMoreIcon />} className="summary">
-													<Typography>{subItem.title}</Typography>
-												</AccordionSummary>
-												{subItem.description ? (
-													<AccordionDetails className="description">
-														{subItem.description}
-													</AccordionDetails>
-												) : (
-													""
-												)}
-
-												{subItem.items?.map((subOfSubItem) => (
-													<Accordion key={subOfSubItem.title} className="sub-summary no-shadow">
-														<AccordionSummary expandIcon={<ExpandMoreIcon />} className="summary">
-															<Typography>{subOfSubItem.title}</Typography>
-														</AccordionSummary>
-														<AccordionDetails className="description">
-															{subOfSubItem.description}
-														</AccordionDetails>
-													</Accordion>
-												))}
-											</Accordion>
-										))}
-									</Accordion>
-								))}
-							</Accordion>
-						))}
 					</Stack>
+
+					{/* <Stack style={{ marginTop: "10px" }} spacing={2}>
+						{exampleData.map((data) => (
+							<NestedAccordion key="exampleData" exampleData={data} />
+						))}
+					</Stack> */}
+
+					<Stack className="title-with-buttons-container">
+						<Typography variant="h6" className="title">
+							Answer
+						</Typography>
+						<div className="buttons-container">
+							<IconButtonComponent
+								buttonType="button"
+								variant="contained"
+								color="error"
+								handleFunction={enableDeleteButton}
+							>
+								{deleteButtonText}
+							</IconButtonComponent>
+							<IconButtonComponent buttonType="button" variant="contained">
+								Close All
+							</IconButtonComponent>
+						</div>
+					</Stack>
+
+					<hr />
+					<NestedAccordion
+						exampleData={exampleData}
+						handleCreate={createItemHandler}
+						showDeleteButton={showDeleteButton}
+					/>
 				</TabPanel>
 			</TabContext>
 		</Box>

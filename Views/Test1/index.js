@@ -242,7 +242,7 @@ function Test1() {
 								buttonType="button"
 								variant="contained"
 								color="error"
-								handleFunction={enableDeleteButton}
+								onClick={enableDeleteButton}
 							>
 								{deleteButtonText}
 							</IconButtonComponent>

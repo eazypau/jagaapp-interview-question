@@ -70,6 +70,10 @@ function Test1() {
 	const [showDeleteButton, setShowDeleteButton] = useState(false);
 	const [deleteButtonText, setDeleteButtonText] = useState("Enable Delete Button");
 	const [modalIsOpen, setModalIsOpen] = useState(false);
+	const [modalDetails, setModalDetails] = useState({
+		type: "Edit",
+		title: "Edit Item",
+	});
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
@@ -255,7 +259,11 @@ function Test1() {
 						showDeleteButton={showDeleteButton}
 					/>
 
-					<DialogComponent isOpen={modalIsOpen} handleClose={() => setModalIsOpen(false)} />
+					<DialogComponent
+						modalDetails={modalDetails}
+						isOpen={modalIsOpen}
+						handleClose={() => setModalIsOpen(false)}
+					/>
 				</TabPanel>
 			</TabContext>
 		</Box>

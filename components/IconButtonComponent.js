@@ -7,9 +7,10 @@ function IconButtonComponent({
 	ariaLabel,
 	icon,
 	variant,
-	handleFunction,
+	onClick,
 	className = "primary",
 	color,
+	style = {},
 	children,
 }) {
 	// need to use a condition to render eitehr icon button or button
@@ -19,8 +20,9 @@ function IconButtonComponent({
 			<Button
 				variant={variant}
 				startIcon={icon}
-				onClick={handleFunction}
+				onClick={onClick}
 				color={color}
+				sx={style}
 				className={className}
 			>
 				{children}
@@ -31,8 +33,9 @@ function IconButtonComponent({
 			<IconButton
 				variant={variant}
 				aria-label={ariaLabel}
-				onClick={handleFunction}
+				onClick={onClick}
 				color={color}
+				sx={style}
 				className={className}
 			>
 				{children}

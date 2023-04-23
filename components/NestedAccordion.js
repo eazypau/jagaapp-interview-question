@@ -35,7 +35,7 @@ function Accordions({ data, className, handleCreate, showDeleteIcon }) {
 					buttonType="icon-button"
 					variant="primary"
 					ariaLabel="create item"
-					handleFunction={handleCreate}
+					onClick={handleCreate}
 					className="btn-icon"
 				>
 					<Edit />
@@ -45,7 +45,7 @@ function Accordions({ data, className, handleCreate, showDeleteIcon }) {
 						buttonType="icon-button"
 						variant="primary"
 						ariaLabel="create item"
-						handleFunction={handleCreate}
+						onClick={handleCreate}
                         color="error"
 						className="btn-icon"
 					>
@@ -56,7 +56,7 @@ function Accordions({ data, className, handleCreate, showDeleteIcon }) {
 						buttonType="icon-button"
 						variant="primary"
 						ariaLabel="create item"
-						handleFunction={handleCreate}
+						onClick={handleCreate}
 						className="btn-icon"
 					>
 						<Edit />
@@ -96,7 +96,7 @@ function Accordions({ data, className, handleCreate, showDeleteIcon }) {
 										buttonType="button"
 										variant="outlined"
 										icon={<Add />}
-										handleFunction={handleCreate}
+										onClick={handleCreate}
 									>
 										Item
 									</IconButtonComponent>
@@ -116,7 +116,7 @@ function Accordions({ data, className, handleCreate, showDeleteIcon }) {
 					buttonType="button"
 					variant="outlined"
 					icon={<Add />}
-					handleFunction={handleCreate}
+					onClick={handleCreate}
 				>
 					New Sub Item
 				</IconButtonComponent>
@@ -141,7 +141,7 @@ function NestedAccordion({ exampleData, handleCreate, showDeleteButton }) {
 				buttonType="button"
 				variant="outlined"
 				icon={<Add />}
-				handleFunction={handleCreate}
+				onClick={handleCreate}
 			>
 				Catergory
 			</IconButtonComponent>

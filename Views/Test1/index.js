@@ -240,7 +240,7 @@ function Test1() {
 						<div className="buttons-container">
 							<IconButtonComponent
 								buttonType="button"
-								variant="contained"
+								variant="outlined"
 								color="error"
 								onClick={enableDeleteButton}
 							>

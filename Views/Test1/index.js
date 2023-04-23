@@ -18,6 +18,7 @@ import {
 	NestedAccordion,
 	ExampleNestedAccordion,
 	IconButtonComponent,
+	DialogComponent,
 } from "../../components/index";
 
 const exampleData = [
@@ -68,15 +69,21 @@ function Test1() {
 	const [data, setData] = useState(exampleData);
 	const [showDeleteButton, setShowDeleteButton] = useState(false);
 	const [deleteButtonText, setDeleteButtonText] = useState("Enable Delete Button");
+	const [modalIsOpen, setModalIsOpen] = useState(false);
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
 	};
 
 	const createItemHandler = () => {
+		setModalIsOpen(true);
 		console.log("create item");
 		// need to find a way to create the items by depth
+		// check by parent id
 	};
+
+	// for edit and delete
+	// check by parent id and item id or index
 
 	const enableDeleteButton = () => {
 		if (showDeleteButton) {
@@ -209,7 +216,7 @@ function Test1() {
 						</Box>
 					</Stack>
 				</TabPanel>
-				<TabPanel value="2" sx={{maxWidth: "1200px",  margin:"0 auto"}}>
+				<TabPanel value="2" sx={{ maxWidth: "1200px", margin: "0 auto" }}>
 					<Stack spacing={2}>
 						<Typography variant="h6">Examples of using Accordions</Typography>
 						<hr />
@@ -243,10 +250,12 @@ function Test1() {
 
 					<hr />
 					<NestedAccordion
-						exampleData={exampleData}
+						exampleData={data}
 						handleCreate={createItemHandler}
 						showDeleteButton={showDeleteButton}
 					/>
+
+					<DialogComponent isOpen={modalIsOpen} handleClose={() => setModalIsOpen(false)} />
 				</TabPanel>
 			</TabContext>
 		</Box>

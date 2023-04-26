@@ -49,11 +49,9 @@ function Accordions({ data, className, onClick, showDeleteIcon, parentId }) {
 							onClick(e, {
 								type: "Delete",
 								title: "Delete Item",
-								selectedItem: {
-									title: data.title,
-									description: data.description,
-								},
-								parentId: parentId,
+								selectedItem: {},
+								selectedId: data.id,
+								parentId: data.parentId,
 							})
 						}
 						color="error"
@@ -74,7 +72,7 @@ function Accordions({ data, className, onClick, showDeleteIcon, parentId }) {
 									title: data.title,
 									description: data.description,
 								},
-								parentId: parentId,
+								selectedId: parentId,
 							})
 						}
 						className="btn-icon"
@@ -122,7 +120,7 @@ function Accordions({ data, className, onClick, showDeleteIcon, parentId }) {
 												type: "Create",
 												title: "Create Item",
 												selectedItem: {},
-												parentId: parentId,
+												selectedId: parentId,
 											})
 										}
 									>
@@ -138,7 +136,7 @@ function Accordions({ data, className, onClick, showDeleteIcon, parentId }) {
 			)}
 
 			{/* button create new sub item */}
-			{!data.items && (
+			{!data.items || !data.items.length ? (
 				<IconButtonComponent
 					className="btn"
 					buttonType="button"
@@ -149,12 +147,14 @@ function Accordions({ data, className, onClick, showDeleteIcon, parentId }) {
 							type: "Create",
 							title: "Create Item",
 							selectedItem: {},
-							parentId: parentId,
+							selectedId: parentId,
 						})
 					}
 				>
 					New Sub Item
 				</IconButtonComponent>
+			) : (
+				""
 			)}
 		</Accordion>
 	);
@@ -187,7 +187,7 @@ function NestedAccordion({ exampleData, onClick, showDeleteButton }) {
 						type: "Create",
 						title: "Create Item",
 						selectedItem: {},
-						parentId: "",
+						selectedId: "",
 					})
 				}
 			>

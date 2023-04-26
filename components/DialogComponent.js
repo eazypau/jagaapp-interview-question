@@ -81,7 +81,7 @@ function DialogComponent({
 							buttonType="button"
 							variant="contained"
 							color="primary"
-							onClick={(e) => handleOutput(e, modalDetails.type)}
+							onClick={(e) => handleOutput(e, modalDetails.type, "all")}
 						>
 							Remove All
 						</IconButtonComponent>
@@ -89,7 +89,7 @@ function DialogComponent({
 							buttonType="button"
 							variant="contained"
 							color="primary"
-							onClick={(e) => handleOutput(e, modalDetails.type)}
+							onClick={(e) => handleOutput(e, modalDetails.type, "only-parent")}
 						>
 							Remove Selected Item
 						</IconButtonComponent>

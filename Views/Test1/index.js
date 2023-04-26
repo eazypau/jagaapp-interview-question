@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Head from "next/head";
 
 import Box from "@mui/material/Box";
@@ -16,6 +16,7 @@ import {
 	DialogComponent,
 } from "../../components/index";
 import { generateRandomId } from "../../helpers/generateId";
+import { findObjectById } from "../../helpers/findObjectById";
 
 const exampleData = [
 	{
@@ -74,7 +75,9 @@ function Test1() {
 		title: "",
 		description: "",
 	});
-	const [parentId, setParentId] = useState("");
+	// const [parentId, setParentId] = useState("");
+	const selectedItemId = useRef("");
+	const parentOfParentId = useRef("");
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
@@ -88,11 +91,13 @@ function Test1() {
 			// items: [],
 		};
 
-		if (parentId) {
+		if (selectedItemId.current) {
 			// using recursion to find the parent id
+			// assign parentId to sub item
+			newItem.parentId = selectedItemId.current;
 			const addItems = (items) => {
 				return items.map((item) => {
-					if (item.id === parentId) {
+					if (item.id === selectedItemId.current) {
 						if (!item.hasOwnProperty("items")) item.items = [];
 						return { ...item, items: [...item.items, newItem] };
 					} else if (item.items) {
@@ -115,11 +120,10 @@ function Test1() {
 		});
 	};
 
-	const EditItemHandler = () => {
-		const selectedId = parentId;
+	const editItemHandler = () => {
 		const updateNestedItem = (items) => {
 			return items.map((item) => {
-				if (item.id === selectedId) {
+				if (item.id === selectedItemId.current) {
 					// return updatedItem;
 					return { ...item, title: inputValues.title, description: inputValues.description };
 				} else if (item.items) {
@@ -138,34 +142,101 @@ function Test1() {
 		});
 	};
 
-	const DeleteItemHandler = (values) => {
-		console.log("delete item");
-		// need to find a way to create the items by depth
-		// check by parent id
-		// scenarios to cover:
-		// - delete child item
-		// - delete parent with child item(s)
-		// - delete only parent and shift child item(s) to parent level
+	const deleteItemHandler = (option) => {
+		if (option === "child" || option === "all") {
+			const deleteNestedItem = (items) => {
+				return items.filter((item) => {
+					if (item.id === selectedItemId.current) {
+						return false;
+					} else if (item.items) {
+						item.items = deleteNestedItem(item.items);
+					}
+					return true;
+				});
+			};
+			setData((prevItems) => deleteNestedItem(prevItems));
+		} else if (option === "only-parent" && parentOfParentId.current) {
+			let parentofParentObj = {};
+			let childItems = [];
+
+			for (let i = 0; i < data.length; i++) {
+				const searchItem = findObjectById(parentOfParentId.current, data[i]);
+				if (searchItem) {
+					parentofParentObj = { ...searchItem };
+					break;
+				}
+			}
+
+			for (let i = 0; i < data.length; i++) {
+				const searchItem = findObjectById(selectedItemId.current, data[i]);
+				if (searchItem) {
+					childItems = [...searchItem.items];
+					break;
+				}
+			}
+
+			parentofParentObj.items = [...parentofParentObj.items, ...childItems].filter((item) => {
+				if (item.id === selectedItemId.current) {
+					return false;
+				}
+				return true;
+			});
+
+			const replaceParentOfParent = (items) => {
+				return items.map((item) => {
+					if (item.id === parentOfParentId.current) {
+						return { ...item, items: [...parentofParentObj.items] };
+					} else if (item.items) {
+						item.items = replaceParentOfParent(item.items);
+					}
+					return item;
+				});
+			};
+			setData((prevItems) => replaceParentOfParent(prevItems));
+		} else {
+			let selectedItem = data.find((item) => item.id === selectedItemId.current);
+			let primaryLayerItems = data.filter((item) => {
+				if (item.id === selectedItemId.current) {
+					return false;
+				}
+				return true;
+			});
+
+			primaryLayerItems = [...primaryLayerItems, ...selectedItem.items]
+
+			setData((prev) => ([...primaryLayerItems]))
+		}
+
+		setModalIsOpen(false);
 	};
 
-	const showDialogWithDetails = (e, { type, title, selectedItem, parentId }) => {
+	const showDialogWithDetails = (e, { type, title, selectedItem, selectedId, parentId }) => {
 		e.preventDefault();
-		// console.log("parent id: ", parentId);
+		// setParentId(selectedId);
+		selectedItemId.current = selectedId;
 		if (type === "Create") {
 			setInputValues({
 				title: "",
 				description: "",
 			});
-			setParentId(parentId);
 		} else if (type === "Edit") {
 			setInputValues({ ...selectedItem });
-			setParentId(parentId);
 		} else {
-			setInputValues({ ...selectedItem });
-			setParentId(parentId);
-			// check whether have child
-			// if have child item, show prompt
-			// else delete child item
+			let findObj = {};
+			for (let i = 0; i < data.length; i++) {
+				const searchItem = findObjectById(selectedId, data[i]);
+				if (searchItem) {
+					findObj = searchItem;
+					break;
+				}
+			}
+			// if is just a child item, remove it
+			if (!findObj.hasOwnProperty("items")) {
+				deleteItemHandler("child");
+				return;
+			}
+
+			parentOfParentId.current = parentId;
 		}
 
 		setModalDetails({
@@ -182,10 +253,10 @@ function Test1() {
 				createItemHandler();
 				break;
 			case "Edit":
-				EditItemHandler();
+				editItemHandler();
 				break;
 			case "Delete":
-				DeleteItemHandler();
+				deleteItemHandler(value);
 				break;
 			default:
 				break;

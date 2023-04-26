@@ -16,22 +16,43 @@ const textInputStyle = {
 	marginBottom: "1em",
 };
 
-function DialogComponent({ modalDetails, isOpen, handleClose, handleOutput, inputValues }) {
+function DialogComponent({
+	modalDetails,
+	isOpen,
+	handleClose,
+	handleOutput,
+	inputValues,
+	onInputChange,
+}) {
 	// conditionally render prompt
 	if (["Create", "Edit"].includes(modalDetails.type)) {
 		return (
 			<Dialog open={isOpen} onClose={handleClose}>
 				<DialogTitle>{modalDetails.title}</DialogTitle>
 				<Box sx={modalStyle} className="modal-box">
-					<TextField sx={textInputStyle} label="Title" variant="outlined" />
-					<TextField sx={textInputStyle} label="Description" variant="outlined" />
+					<TextField
+						sx={textInputStyle}
+						label="Title"
+						name="title"
+						variant="outlined"
+						value={inputValues.title}
+						onChange={onInputChange}
+					/>
+					<TextField
+						sx={textInputStyle}
+						label="Description"
+						name="description"
+						variant="outlined"
+						value={inputValues.description}
+						onChange={onInputChange}
+					/>
 
 					<div className="modal-button-container">
 						<IconButtonComponent
 							buttonType="button"
 							variant="contained"
 							color="primary"
-							onClick={handleOutput}
+							onClick={(e) => handleOutput(e, "Create")}
 						>
 							Done
 						</IconButtonComponent>

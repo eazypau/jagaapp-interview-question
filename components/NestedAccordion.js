@@ -8,7 +8,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Add, Edit, Delete } from "@mui/icons-material";
 import IconButtonComponent from "./IconButtonComponent";
 
-function Accordions({ data, className, handleCreate, showDeleteIcon }) {
+function Accordions({ data, className, onClick, showDeleteIcon, parentId }) {
 	const [isOpen, setIsOpen] = useState(false);
 
 	const handleAccordionChange = (e) => {
@@ -35,7 +35,7 @@ function Accordions({ data, className, handleCreate, showDeleteIcon }) {
 					buttonType="icon-button"
 					variant="primary"
 					ariaLabel="create item"
-					onClick={handleCreate}
+					onClick={onClick}
 					className="btn-icon"
 				>
 					<Edit />
@@ -44,9 +44,19 @@ function Accordions({ data, className, handleCreate, showDeleteIcon }) {
 					<IconButtonComponent
 						buttonType="icon-button"
 						variant="primary"
-						ariaLabel="create item"
-						onClick={handleCreate}
-                        color="error"
+						ariaLabel="remove item"
+						onClick={(e) =>
+							onClick(e, {
+								type: "Delete",
+								title: "Delete Item",
+								selectedItem: {
+									title: data.title,
+									description: data.description,
+								},
+								parentId: parentId,
+							})
+						}
+						color="error"
 						className="btn-icon"
 					>
 						<Delete />
@@ -55,8 +65,18 @@ function Accordions({ data, className, handleCreate, showDeleteIcon }) {
 					<IconButtonComponent
 						buttonType="icon-button"
 						variant="primary"
-						ariaLabel="create item"
-						onClick={handleCreate}
+						ariaLabel="edit item"
+						onClick={(e) =>
+							onClick(e, {
+								type: "Edit",
+								title: "Edit Item",
+								selectedItem: {
+									title: data.title,
+									description: data.description,
+								},
+								parentId: parentId,
+							})
+						}
 						className="btn-icon"
 					>
 						<Edit />
@@ -85,8 +105,9 @@ function Accordions({ data, className, handleCreate, showDeleteIcon }) {
 									key={item.title}
 									data={item}
 									className={className}
-									handleCreate={handleCreate}
-                                    showDeleteIcon={showDeleteIcon}
+									onClick={onClick}
+									showDeleteIcon={showDeleteIcon}
+									parentId={item.id}
 								/>
 
 								{/* button create new item in existing level */}
@@ -96,7 +117,14 @@ function Accordions({ data, className, handleCreate, showDeleteIcon }) {
 										buttonType="button"
 										variant="outlined"
 										icon={<Add />}
-										onClick={handleCreate}
+										onClick={(e) =>
+											onClick(e, {
+												type: "Create",
+												title: "Create Item",
+												selectedItem: {},
+												parentId: parentId,
+											})
+										}
 									>
 										Item
 									</IconButtonComponent>
@@ -116,7 +144,14 @@ function Accordions({ data, className, handleCreate, showDeleteIcon }) {
 					buttonType="button"
 					variant="outlined"
 					icon={<Add />}
-					onClick={handleCreate}
+					onClick={(e) =>
+						onClick(e, {
+							type: "Create",
+							title: "Create Item",
+							selectedItem: {},
+							parentId: parentId,
+						})
+					}
 				>
 					New Sub Item
 				</IconButtonComponent>
@@ -125,11 +160,17 @@ function Accordions({ data, className, handleCreate, showDeleteIcon }) {
 	);
 }
 
-function NestedAccordion({ exampleData, handleCreate, showDeleteButton }) {
+function NestedAccordion({ exampleData, onClick, showDeleteButton }) {
 	const renderAccordions = (exampleData) => {
 		return exampleData.map((data) => (
 			<div key={data.title}>
-				<Accordions data={data} handleCreate={handleCreate} showDeleteIcon={showDeleteButton} className="primary-accordion" />
+				<Accordions
+					data={data}
+					onClick={onClick}
+					className="primary-accordion"
+					showDeleteIcon={showDeleteButton}
+					parentId={data.id}
+				/>
 			</div>
 		));
 	};
@@ -141,7 +182,14 @@ function NestedAccordion({ exampleData, handleCreate, showDeleteButton }) {
 				buttonType="button"
 				variant="outlined"
 				icon={<Add />}
-				onClick={handleCreate}
+				onClick={(e) =>
+					onClick(e, {
+						type: "Create",
+						title: "Create Item",
+						selectedItem: {},
+						parentId: "",
+					})
+				}
 			>
 				Catergory
 			</IconButtonComponent>

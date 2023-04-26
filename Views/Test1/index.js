@@ -9,17 +9,13 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import Paper from "@mui/material/Paper";
-// import Accordion from "@mui/material/Accordion";
-// import AccordionSummary from "@mui/material/AccordionSummary";
-// import AccordionDetails from "@mui/material/AccordionDetails";
-// import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-// import ExampleNestedAccordion from "../../components/ExampleNestedAccordion";
 import {
 	NestedAccordion,
 	ExampleNestedAccordion,
 	IconButtonComponent,
 	DialogComponent,
 } from "../../components/index";
+import { generateRandomId } from "../../helpers/generateId";
 
 const exampleData = [
 	{
@@ -66,7 +62,7 @@ const exampleData = [
 
 function Test1() {
 	const [value, setValue] = useState("1");
-	const [data, setData] = useState(exampleData);
+	const [data, setData] = useState([]);
 	const [showDeleteButton, setShowDeleteButton] = useState(false);
 	const [deleteButtonText, setDeleteButtonText] = useState("Enable Delete Button");
 	const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -74,16 +70,108 @@ function Test1() {
 		type: "Edit",
 		title: "Edit Item",
 	});
+	const [inputValues, setInputValues] = useState({
+		title: "",
+		description: "",
+	});
+	const [parentId, setParentId] = useState("");
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
 	};
 
 	const createItemHandler = () => {
-		setModalIsOpen(true);
-		console.log("create item");
+		const newItem = {
+			id: generateRandomId(),
+			title: inputValues.title,
+			description: inputValues.description,
+			// items: [],
+		};
+		if (parentId) {
+			// using recursion to find the parent id
+			const addItems = (items) => {
+				return items.map((item) => {
+					if (item.id === parentId) {
+						if (!item.hasOwnProperty("items")) item.items = [];
+						return { ...item, items: [...item.items, newItem] };
+					} else if (item.items) {
+						return { ...item, items: addItems(item.items) };
+					} else {
+						return item;
+					}
+				});
+			};
+			setData((prevItems) => addItems(prevItems));
+		} else {
+			// this is only for creating new catergory at the top level
+			setData((prevItems) => [...prevItems, { ...newItem }]);
+		}
+
+		setModalIsOpen(false);
+		setInputValues({
+			title: "",
+			description: "",
+		});
+	};
+
+	const EditItemHandler = (values) => {
+		console.log("edit item");
 		// need to find a way to create the items by depth
 		// check by parent id
+	};
+
+	const DeleteItemHandler = (values) => {
+		console.log("delete item");
+		// need to find a way to create the items by depth
+		// check by parent id
+		// scenarios to cover:
+		// - delete child item
+		// - delete parent with child item(s)
+		// - delete only parent and shift child item(s) to parent level
+	};
+
+	const showDialogWithDetails = (e, { type, title, selectedItem, parentId }) => {
+		e.preventDefault();
+		console.log("parent id: ", parentId);
+		if (type === "Create") {
+			setInputValues({
+				title: "",
+				description: "",
+			});
+			setParentId(parentId);
+		} else if (type === "Edit") {
+			setInputValues({ ...selectedItem });
+			setParentId(parentId);
+		} else {
+			setInputValues({ ...selectedItem });
+			setParentId(parentId);
+			// check whether have child
+			// if have child item, show prompt
+			// else delete child item
+		}
+
+		setModalDetails({
+			type: type,
+			title: title,
+		});
+		setModalIsOpen(true);
+	};
+
+	const processHandler = (e, type, value) => {
+		e.preventDefault();
+		switch (type) {
+			case "Create":
+				createItemHandler(value);
+				break;
+			case "Edit":
+				EditItemHandler();
+				break;
+			case "Delete":
+				DeleteItemHandler();
+				break;
+			default:
+				break;
+		}
 	};
 
 	// for edit and delete
@@ -227,12 +315,6 @@ function Test1() {
 						<ExampleNestedAccordion />
 					</Stack>
 
-					{/* <Stack style={{ marginTop: "10px" }} spacing={2}>
-						{exampleData.map((data) => (
-							<NestedAccordion key="exampleData" exampleData={data} />
-						))}
-					</Stack> */}
-
 					<Stack className="title-with-buttons-container">
 						<Typography variant="h6" className="title">
 							Answer
@@ -255,7 +337,7 @@ function Test1() {
 					<hr />
 					<NestedAccordion
 						exampleData={data}
-						handleCreate={createItemHandler}
+						onClick={showDialogWithDetails}
 						showDeleteButton={showDeleteButton}
 					/>
 
@@ -263,6 +345,14 @@ function Test1() {
 						modalDetails={modalDetails}
 						isOpen={modalIsOpen}
 						handleClose={() => setModalIsOpen(false)}
+						handleOutput={processHandler}
+						inputValues={inputValues}
+						onInputChange={(e) => {
+							setInputValues((prev) => ({
+								...prev,
+								[e.target.name]: e.target.value,
+							}));
+						}}
 					/>
 				</TabPanel>
 			</TabContext>

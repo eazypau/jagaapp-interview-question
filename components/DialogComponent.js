@@ -52,7 +52,7 @@ function DialogComponent({
 							buttonType="button"
 							variant="contained"
 							color="primary"
-							onClick={(e) => handleOutput(e, "Create")}
+							onClick={(e) => handleOutput(e, modalDetails.type)}
 						>
 							Done
 						</IconButtonComponent>
@@ -81,7 +81,7 @@ function DialogComponent({
 							buttonType="button"
 							variant="contained"
 							color="primary"
-							onClick={handleOutput}
+							onClick={(e) => handleOutput(e, modalDetails.type)}
 						>
 							Remove All
 						</IconButtonComponent>
@@ -89,7 +89,7 @@ function DialogComponent({
 							buttonType="button"
 							variant="contained"
 							color="primary"
-							onClick={handleOutput}
+							onClick={(e) => handleOutput(e, modalDetails.type)}
 						>
 							Remove Selected Item
 						</IconButtonComponent>

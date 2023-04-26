@@ -87,6 +87,7 @@ function Test1() {
 			description: inputValues.description,
 			// items: [],
 		};
+
 		if (parentId) {
 			// using recursion to find the parent id
 			const addItems = (items) => {
@@ -114,10 +115,27 @@ function Test1() {
 		});
 	};
 
-	const EditItemHandler = (values) => {
-		console.log("edit item");
-		// need to find a way to create the items by depth
-		// check by parent id
+	const EditItemHandler = () => {
+		const selectedId = parentId;
+		const updateNestedItem = (items) => {
+			return items.map((item) => {
+				if (item.id === selectedId) {
+					// return updatedItem;
+					return { ...item, title: inputValues.title, description: inputValues.description };
+				} else if (item.items) {
+					return { ...item, items: updateNestedItem(item.items) };
+				} else {
+					return item;
+				}
+			});
+		};
+
+		setData((prevItems) => updateNestedItem(prevItems));
+		setModalIsOpen(false);
+		setInputValues({
+			title: "",
+			description: "",
+		});
 	};
 
 	const DeleteItemHandler = (values) => {
@@ -132,7 +150,7 @@ function Test1() {
 
 	const showDialogWithDetails = (e, { type, title, selectedItem, parentId }) => {
 		e.preventDefault();
-		console.log("parent id: ", parentId);
+		// console.log("parent id: ", parentId);
 		if (type === "Create") {
 			setInputValues({
 				title: "",
@@ -161,7 +179,7 @@ function Test1() {
 		e.preventDefault();
 		switch (type) {
 			case "Create":
-				createItemHandler(value);
+				createItemHandler();
 				break;
 			case "Edit":
 				EditItemHandler();

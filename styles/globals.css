@@ -43,6 +43,7 @@ body {
 	margin-left: 0.5em;
 }
 
+.primary-accordion .details,
 .summary .details,
 .sub-summary .details {
 	margin-left: 3.5em;

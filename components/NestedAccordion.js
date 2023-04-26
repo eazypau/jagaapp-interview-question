@@ -8,13 +8,29 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Add, Edit, Delete } from "@mui/icons-material";
 import IconButtonComponent from "./IconButtonComponent";
 
-function Accordions({ data, className, onClick, showDeleteIcon, parentId }) {
-	const [isOpen, setIsOpen] = useState(false);
+function Accordions({
+	data,
+	className,
+	onClick,
+	showDeleteIcon,
+	parentId,
+	isOpen,
+	handleAccordionChange,
+}) {
+	// const [isOpen, setIsOpen] = useState(false);
 
-	const handleAccordionChange = (e) => {
-		if (!["BUTTON", "path", "svg"].includes(e.target.nodeName)) {
-			if (isOpen) setIsOpen(false);
-			else setIsOpen(true);
+	const handleAccordionExpand = (e) => {
+		let clickedElement = e.target.nodeName
+		if (clickedElement === "svg") {
+			clickedElement = e.target.parentNode.nodeName
+		} else if (clickedElement === "path") {
+			clickedElement = e.target.parentNode.parentNode.nodeName
+		}
+
+		if (clickedElement !== "BUTTON") {
+			// if (isOpen) setIsOpen(false);
+			// else setIsOpen(true);
+			handleAccordionChange(data.id);
 		}
 	};
 
@@ -27,8 +43,8 @@ function Accordions({ data, className, onClick, showDeleteIcon, parentId }) {
 				},
 			}}
 			className={className ? className : ""}
-			expanded={isOpen}
-			onChange={handleAccordionChange}
+			expanded={isOpen[data.id]}
+			onChange={(e) => handleAccordionExpand(e)}
 		>
 			<AccordionSummary className="summary" expandIcon={<ExpandMoreIcon />}>
 				{/* <IconButtonComponent
@@ -106,6 +122,8 @@ function Accordions({ data, className, onClick, showDeleteIcon, parentId }) {
 									onClick={onClick}
 									showDeleteIcon={showDeleteIcon}
 									parentId={item.id}
+									isOpen={isOpen}
+									handleAccordionChange={handleAccordionChange}
 								/>
 
 								{/* button create new item in existing level */}
@@ -160,16 +178,24 @@ function Accordions({ data, className, onClick, showDeleteIcon, parentId }) {
 	);
 }
 
-function NestedAccordion({ exampleData, onClick, showDeleteButton }) {
+function NestedAccordion({
+	exampleData,
+	onClick,
+	showDeleteButton,
+	accordionList,
+	handleAccordionChange,
+}) {
 	const renderAccordions = (exampleData) => {
 		return exampleData.map((data) => (
-			<div key={data.title}>
+			<div key={data.id}>
 				<Accordions
 					data={data}
 					onClick={onClick}
 					className="primary-accordion"
 					showDeleteIcon={showDeleteButton}
 					parentId={data.id}
+					isOpen={accordionList}
+					handleAccordionChange={handleAccordionChange}
 				/>
 			</div>
 		));

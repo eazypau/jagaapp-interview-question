@@ -17,49 +17,7 @@ import {
 } from "../../components/index";
 import { generateRandomId } from "../../helpers/generateId";
 import { findObjectById } from "../../helpers/findObjectById";
-
-const exampleData = [
-	{
-		title: "Important List",
-		description: "",
-		items: [
-			{
-				title: "Book a restaurant",
-				description: "Remember book a restaurant at 6th of December",
-				items: [
-					{
-						title: "Dishes",
-						description: "",
-						items: [
-							{
-								title: "Fried Vegetable",
-								description: "6pax",
-							},
-							{
-								title: "Fried Chicken",
-								description: "4pax",
-							},
-						],
-					},
-				],
-			},
-			{
-				title: "Restock groceries",
-				description: "Get the butter",
-			},
-		],
-	},
-	{
-		title: "Urgent",
-		description: "",
-		items: [
-			{
-				title: "Fetch kids",
-				description: "Today 5pm",
-			},
-		],
-	},
-];
+import { exampleData, exampleData2, exampleData3 } from "../../sample data/exampleData";
 
 function Test1() {
 	const [value, setValue] = useState("1");
@@ -78,9 +36,52 @@ function Test1() {
 	// const [parentId, setParentId] = useState("");
 	const selectedItemId = useRef("");
 	const parentOfParentId = useRef("");
+	const [accordionsList, setAccordionList] = useState({});
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
+	};
+
+	const handleAccordionChange = (id) => {
+		if (accordionsList[id]) {
+			setAccordionList((prev) => ({
+				...prev,
+				[id]: false,
+			}));
+		} else {
+			setAccordionList((prev) => ({
+				...prev,
+				[id]: true,
+			}));
+		}
+	};
+
+	const closeAllAccordions = () => {
+		const newAccordionList = { ...accordionsList };
+
+		Object.keys(newAccordionList).forEach((accordion) => {
+			newAccordionList[accordion] = false;
+		});
+
+		console.log(newAccordionList);
+
+		setAccordionList((prev) => ({ ...newAccordionList }));
+	};
+
+	const updateAccordionList = (referenceObj) => {
+		// const newAccordionList = {...accordionsList}
+		setAccordionList((prev) => {
+			const newAccordionList = { ...prev };
+			delete newAccordionList(referenceObj.id);
+
+			return { ...newAccordionList };
+		});
+
+		if (referenceObj.items) {
+			for (let i = 0; i < referenceObj.items.length; i++) {
+				updateAccordionList(referenceObj.items[i]);
+			}
+		}
 	};
 
 	const createItemHandler = () => {
@@ -113,6 +114,10 @@ function Test1() {
 			setData((prevItems) => [...prevItems, { ...newItem }]);
 		}
 
+		setAccordionList((prev) => ({
+			...prev,
+			[newItem.id]: false,
+		}));
 		setModalIsOpen(false);
 		setInputValues({
 			title: "",
@@ -147,6 +152,7 @@ function Test1() {
 			const deleteNestedItem = (items) => {
 				return items.filter((item) => {
 					if (item.id === selectedItemId.current) {
+						updateAccordionList(item);
 						return false;
 					} else if (item.items) {
 						item.items = deleteNestedItem(item.items);
@@ -177,6 +183,13 @@ function Test1() {
 
 			parentofParentObj.items = [...parentofParentObj.items, ...childItems].filter((item) => {
 				if (item.id === selectedItemId.current) {
+					// remove id property from accordion list
+					setAccordionList((prev) => {
+						const newAccordionList = { ...prev };
+						delete newAccordionList[item.id];
+						return { ...newAccordionList };
+					});
+
 					return false;
 				}
 				return true;
@@ -202,9 +215,9 @@ function Test1() {
 				return true;
 			});
 
-			primaryLayerItems = [...primaryLayerItems, ...selectedItem.items]
+			primaryLayerItems = [...primaryLayerItems, ...selectedItem.items];
 
-			setData((prev) => ([...primaryLayerItems]))
+			setData((prev) => [...primaryLayerItems]);
 		}
 
 		setModalIsOpen(false);
@@ -275,66 +288,6 @@ function Test1() {
 			setDeleteButtonText("Disable Delete Button");
 		}
 	};
-
-	const exampleData2 = [
-		{
-			title: "Important List",
-			description: "",
-			items: [
-				{
-					title: "Restock groceries",
-					description: "Get the butter",
-				},
-			],
-		},
-		{
-			title: "Urgent",
-			description: "",
-			items: [
-				{
-					title: "Fetch kids",
-					description: "Today 5pm",
-				},
-			],
-		},
-	];
-
-	const exampleData3 = [
-		{
-			title: "Important List",
-			description: "",
-			items: [
-				{
-					title: "Dishes",
-					description: "",
-					items: [
-						{
-							title: "Fried Vegetable",
-							description: "6pax",
-						},
-						{
-							title: "Fried Chicken",
-							description: "4pax",
-						},
-					],
-				},
-				{
-					title: "Restock groceries",
-					description: "Get the butter",
-				},
-			],
-		},
-		{
-			title: "Urgent",
-			description: "",
-			items: [
-				{
-					title: "Fetch kids",
-					description: "Today 5pm",
-				},
-			],
-		},
-	];
 
 	return (
 		<Box>
@@ -417,7 +370,11 @@ function Test1() {
 							>
 								{deleteButtonText}
 							</IconButtonComponent>
-							<IconButtonComponent buttonType="button" variant="contained">
+							<IconButtonComponent
+								buttonType="button"
+								variant="contained"
+								onClick={closeAllAccordions}
+							>
 								Close All
 							</IconButtonComponent>
 						</div>
@@ -428,6 +385,8 @@ function Test1() {
 						exampleData={data}
 						onClick={showDialogWithDetails}
 						showDeleteButton={showDeleteButton}
+						accordionList={accordionsList}
+						handleAccordionChange={handleAccordionChange}
 					/>
 
 					<DialogComponent

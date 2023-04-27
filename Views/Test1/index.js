@@ -241,7 +241,7 @@ function Test1() {
 				}
 			}
 			// if is just a child item, remove it
-			if (!findObj.hasOwnProperty("items")) {
+			if (!findObj.hasOwnProperty("items") || findObj.items.length === 0) {
 				deleteItemHandler("child");
 				return;
 			}

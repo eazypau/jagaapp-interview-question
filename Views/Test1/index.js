@@ -18,6 +18,7 @@ import {
 import { generateRandomId } from "../../helpers/generateId";
 import { findObjectById } from "../../helpers/findObjectById";
 import { exampleData, exampleData2, exampleData3 } from "../../sample data/exampleData";
+import { reorder } from "../../helpers/reorder";
 
 function Test1() {
 	const [value, setValue] = useState("1");
@@ -289,6 +290,41 @@ function Test1() {
 		}
 	};
 
+	const handleDrag = (result) => {
+		const { type, source, destination } = result;
+		if (!destination) return;
+
+		const sourceCategoryId = source.droppableId;
+		const destinationCategoryId = destination.droppableId;
+
+		console.log("source id: ", sourceCategoryId);
+		console.log("destination id: ", destinationCategoryId);
+
+		if (type === "droppable-primary") {
+			// reorder primary level
+			const updatePrimaryLevel = reorder(data, source.index, destination.index);
+			setData(updatePrimaryLevel);
+		} else if (sourceCategoryId === destinationCategoryId) {
+			// reorder secondary level and within
+			// only within same caterogry
+			// save it using recursion
+			console.log("reorder child");
+			const reorderItem = (items) => {
+				return items.map((item) => {
+					if (item.id === sourceCategoryId) {
+						const updatedItems = reorder(item.items, source.index, destination.index);
+						return { ...item, items: [...updatedItems] };
+					} else if (item.items) {
+						return { ...item, items: reorderItem(item.items) };
+					} else {
+						return item;
+					}
+				});
+			};
+			setData((prev) => reorderItem(prev));
+		}
+	};
+
 	return (
 		<Box>
 			<Head>
@@ -387,6 +423,7 @@ function Test1() {
 						showDeleteButton={showDeleteButton}
 						accordionList={accordionsList}
 						handleAccordionChange={handleAccordionChange}
+						handleDrag={handleDrag}
 					/>
 
 					<DialogComponent

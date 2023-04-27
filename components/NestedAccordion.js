@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Accordion from "@mui/material/Accordion";
@@ -21,8 +20,6 @@ function Accordions({
 	handleAccordionChange,
 	index,
 }) {
-	// const [isOpen, setIsOpen] = useState(false);
-
 	const handleAccordionExpand = (e) => {
 		let clickedElement = e.target.nodeName;
 		if (clickedElement === "svg") {
@@ -32,8 +29,6 @@ function Accordions({
 		}
 
 		if (clickedElement !== "BUTTON") {
-			// if (isOpen) setIsOpen(false);
-			// else setIsOpen(true);
 			handleAccordionChange(data.id);
 		}
 	};
@@ -52,15 +47,6 @@ function Accordions({
 				onChange={(e) => handleAccordionExpand(e)}
 			>
 				<AccordionSummary className="summary" expandIcon={<ExpandMoreIcon />}>
-					{/* <IconButtonComponent
-						buttonType="icon-button"
-						variant="primary"
-						ariaLabel="create item"
-						onClick={onClick}
-						className="btn-icon"
-					>
-						<Edit />
-					</IconButtonComponent> */}
 					{showDeleteIcon ? (
 						<IconButtonComponent
 							buttonType="icon-button"

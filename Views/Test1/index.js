@@ -11,7 +11,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import Paper from "@mui/material/Paper";
 import {
 	NestedAccordion,
-	ExampleNestedAccordion,
+	// ExampleNestedAccordion,
 	IconButtonComponent,
 	DialogComponent,
 } from "../../components/index";
@@ -34,7 +34,6 @@ function Test1() {
 		title: "",
 		description: "",
 	});
-	// const [parentId, setParentId] = useState("");
 	const selectedItemId = useRef("");
 	const parentOfParentId = useRef("");
 	const [accordionsList, setAccordionList] = useState({});
@@ -64,13 +63,10 @@ function Test1() {
 			newAccordionList[accordion] = false;
 		});
 
-		console.log(newAccordionList);
-
 		setAccordionList((prev) => ({ ...newAccordionList }));
 	};
 
 	const updateAccordionList = (referenceObj) => {
-		// const newAccordionList = {...accordionsList}
 		setAccordionList((prev) => {
 			const newAccordionList = { ...prev };
 			delete newAccordionList[referenceObj.id];
@@ -297,9 +293,6 @@ function Test1() {
 		const sourceCategoryId = source.droppableId;
 		const destinationCategoryId = destination.droppableId;
 
-		console.log("source id: ", sourceCategoryId);
-		console.log("destination id: ", destinationCategoryId);
-
 		if (type === "droppable-primary") {
 			// reorder primary level
 			const updatePrimaryLevel = reorder(data, source.index, destination.index);
@@ -308,7 +301,6 @@ function Test1() {
 			// reorder secondary level and within
 			// only within same caterogry
 			// save it using recursion
-			console.log("reorder child");
 			const reorderItem = (items) => {
 				return items.map((item) => {
 					if (item.id === sourceCategoryId) {
@@ -387,12 +379,6 @@ function Test1() {
 					</Stack>
 				</TabPanel>
 				<TabPanel value="2" sx={{ maxWidth: "1200px", margin: "0 auto" }}>
-					<Stack spacing={2}>
-						<Typography variant="h6">Examples of using Accordions</Typography>
-						<hr />
-						<ExampleNestedAccordion />
-					</Stack>
-
 					<Stack className="title-with-buttons-container">
 						<Typography variant="h6" className="title">
 							Answer

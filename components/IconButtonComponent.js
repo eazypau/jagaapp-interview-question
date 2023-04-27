@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "@mui/material/Button";
-import { IconButton, dividerClasses } from "@mui/material";
+import { IconButton } from "@mui/material";
 
 function IconButtonComponent({
 	buttonType,
@@ -13,8 +13,7 @@ function IconButtonComponent({
 	style = {},
 	children,
 }) {
-	// need to use a condition to render eitehr icon button or button
-
+	// need to use a condition to render either icon button or button
 	if (buttonType === "button") {
 		return (
 			<Button

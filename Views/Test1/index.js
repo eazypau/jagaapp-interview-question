@@ -72,7 +72,7 @@ function Test1() {
 		// const newAccordionList = {...accordionsList}
 		setAccordionList((prev) => {
 			const newAccordionList = { ...prev };
-			delete newAccordionList(referenceObj.id);
+			delete newAccordionList[referenceObj.id];
 
 			return { ...newAccordionList };
 		});
